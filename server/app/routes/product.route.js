@@ -10,7 +10,7 @@ module.exports = app => {
     router.get("/", product.findAll);
   
     // Retrieve all product type
-    router.get("/type", product.findAllType);
+    router.get("/type", product.findByType);
   
     // Retrieve a single product with id
     router.get("/:id", product.findOne);

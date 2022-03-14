@@ -11,7 +11,6 @@ exports.create = (req, res) => {
         });
         return;
       }
-    
       // Create a product
       const prod = {
         name: req.body.name,
@@ -29,43 +28,104 @@ exports.create = (req, res) => {
         .catch(err => {
           res.status(500).send({
             message:
-              err.message || "Some error occurred while creating the Tutorial."
+              err.message || "Some error occurred while creating the product."
           })
         })
 }
 // Retrieve all product from the database.
-exports.findAll = (req, res) => {
-    const title = req.query.name;
-    var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-  
-    Food.findAll({ where: condition })
+exports.findAll = (req, res) => { 
+  console.log('a')
+    Product.findAll()
       .then(data => {
         res.send(data);
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while retrieving tutorials."
+            err.message || "Some error occurred while retrieving products."
         })
       })
 }
+
 // Find a single product with an id
 exports.findOne = (req, res) => {
-  
+  // console.log('id')
+  const id = req.params.id
+  Product.findByPk(id)
+    .then(data => {
+      res.send(data)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: `Error retrieving product with id=${id}`
+      });
+    });
 }
+
 // Update a product by the id in the request
 exports.update = (req, res) => {
-  
+  const id = req.params.id;
+
+  Product.update(req.body, {
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: 'Product was updated successfully.'
+        });
+      } else {
+        res.send({
+          message: `Cannot update product with id=${id}. Maybe product was not found or is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: `Error updating Produt with id=${id}`
+      })
+    })  
 }
 // Delete a product with the specified id in the request
 exports.delete = (req, res) => {
-  
+  const id = req.params.id;
+  Product.destroy({
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Product was deleted successfully!"
+        });
+      } else {
+        res.send({
+          message: `Cannot delete product with id=${id}. Product not found!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: `Could not delete Porduct with id=${id}`
+      });
+    }); 
 }
 // Delete all products from the database.
 exports.deleteAll = (req, res) => {
   
 }
-// Find all published Tutorials
-exports.findAllType = (req, res) => {
-  
+// Find all products type
+exports.findByType = (req, res) => {
+  console.log('b'+req.query.id)
+  const type = req.query.type
+  var condition = type ? { type: { [Op.like]: `%${type}%` } } : null
+  Product.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving data."
+      })
+    })
 }
