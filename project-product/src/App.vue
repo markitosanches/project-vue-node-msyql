@@ -35,19 +35,26 @@
                 </div>
             </div>
         </header>
-  <router-view :inventory="inventory" :addToCart="addToCart"/>
+  <router-view
+  :inventory="inventory"
+  :addToCart="addToCart"
+  :addInv="addInventory"
+  :removeInv="removeInventory"
+  :remove="removeItem"
+  :updateInv="updateInventory"
+  />
   <Sidebar
-    v-if="showSideBar"
-    :toggle="toggleSideBar"
-    :cart = "cart"
-    :inventory = "inventory"
-    :remove = "removeItem"
+  v-if="showSideBar"
+  :toggle="toggleSideBar"
+  :cart="cart"
+  :inventory="inventory"
+  :remove="removeItem"
   />
 </template>
 
 <script>
-import Sidebar from './components/SideBar.vue'
 import ProductDataService from '@/services/ProductDataService'
+import Sidebar from '@/components/SideBar.vue'
 
 export default {
   components: {
@@ -57,8 +64,7 @@ export default {
     return {
       showSideBar: false,
       inventory: [],
-      cart: {},
-      type: ''
+      cart: {}
     }
   },
   methods: {
@@ -69,19 +75,23 @@ export default {
       if (!this.cart[name]) this.cart[name] = 0
       this.cart[name] += this.inventory[index].quantity
       this.inventory[index].quantity = 0
+      console.log(this.cart[name])
     },
     removeItem (name) {
       delete this.cart[name]
     },
-    searchType () {
-      ProductDataService.findAll(this.type)
-        .then(response => {
-          this.inventory = response.data
-          console.log(response.data)
-        })
-        .catch(e => {
-          console.log(e)
-        })
+    addInventory (data) {
+      this.inventory.push(data)
+    },
+    removeInventory (index) {
+      this.inventory.splice(index, 1)
+    },
+    updateInventory (index, data) {
+      this.inventory[index].name = data.name
+      this.inventory[index].photo = data.photo
+      this.inventory[index].price = data.price
+      this.inventory[index].description = data.description
+      this.inventory[index].type = data.type
     }
   },
   computed: {

@@ -23,5 +23,9 @@ class ProductDataService {
   deleteAll () {
     return http.delete('/product')
   }
+
+  findByType (type) {
+    return http.get(`/product?type=${type}`)
+  }
 }
 export default new ProductDataService()

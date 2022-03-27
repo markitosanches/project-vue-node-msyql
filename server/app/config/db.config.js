@@ -3,5 +3,5 @@ module.exports = {
     USER: 'root',
     PASSWORD: '',
     DB: 'db_product',
-    dialect: "mysql",
-  };
+    dialect: 'mysql'
+}
